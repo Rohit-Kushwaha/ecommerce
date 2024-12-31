@@ -10,6 +10,7 @@ const categoryCtrl =
             return res.status(500).json({ msg: error.msg });
         }
     },
+    
     createCategory: async (req, res) => {
         try {
             /// if user have role 1 ---> admin
