@@ -1,6 +1,6 @@
 const Users = require("../model/user_model.js");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 
 const userCtrl = {
   register: async (req, res) => {
@@ -25,7 +25,7 @@ const userCtrl = {
       });
       // Save to mongoDB
       await newUser.save();
-      res.json({ msg: "User created" });
+      res.status(201).json({ msg: "User created" });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ msg: error.msg });

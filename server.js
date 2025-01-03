@@ -18,10 +18,10 @@ app.use(fileUpload({
 app.use('/user', require('./routes/user_router.js'));
 app.use('/api', require('./routes/category_router.js'));
 app.use('/api', require('./routes/upload.js'));
-app.use('/api', require('./routes/products_route.js'));
+app.use('/api', require('./routes/places_route.js'));
 app.use('/api', require('./routes/items_router.js'));
 app.use('/api', require('./routes/otp_route.js'));
-app.use('/api', require('./routes/verify_route.js'));
+// app.use('/api', require('./routes/verify_route.js'));
 
 /// Connect to mongodb
 const URI = process.env.MONGO_DB_URL;

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const otpSchema = mongoose.Schema(
+const otpSchema = new mongoose.Schema(
   {
     email: {
       type: String,
@@ -10,15 +10,10 @@ const otpSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      expires: 60,
-    }, // Auto-delete after 1 minute
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("UserOtp", otpSchema);
+module.exports = mongoose.model("Otp", otpSchema);
