@@ -12,7 +12,6 @@ const otpCtrl = {
       if (!userEmail) return res.status(400).json({ msg: "User not found" });
 
       const otpUser = await Otp.findOne({ email });
-      console.log(otpUser);
 
       var otpSend = otpSent();
 
@@ -43,7 +42,6 @@ const otpCtrl = {
         text: "From Connect Sphere", // plain text body
         html: `<b>${otpSend}</b>`, // html body
       });
-      console.log("Message sent: %s", info.messageId);
 
       res.json({
         msg: "Otp sent succesfully",

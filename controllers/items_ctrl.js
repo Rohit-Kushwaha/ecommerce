@@ -7,10 +7,10 @@ class APIFeature {
 
   filtering() {
     const queryObject = { ...this.queryString }; // queryString = req.query
-    console.log({ before: queryObject }); // before page delete
+    // console.log({ before: queryObject }); // before page delete
     const excludedField = ["page", "sort", "limit"];
     excludedField.forEach((e) => delete queryObject[e]);
-    console.log({ after: queryObject }); // after page delete
+    // console.log({ after: queryObject }); // after page delete
 
     // Convert query operators (e.g., gte, lte) to MongoDB syntax
     let queryStr = JSON.stringify(queryObject);
@@ -19,7 +19,7 @@ class APIFeature {
       (match) => `$${match}`
     );
 
-    console.log({ queryStr });
+    // console.log({ queryStr });
 
     // Apply the filtering to the query
     this.query = this.query.find(JSON.parse(queryStr));
@@ -47,13 +47,13 @@ class APIFeature {
 
 const itemCtrl = {
   getItems: async (req, res) => {
-    console.log(req.query);
+    // console.log(req.query);
     try {
       const features = new APIFeature(Items.find(), req.query)
         .filtering()
         .sorting()
         .pagination();
-      console.log(features);
+      // console.log(features);
       const items = await features.query; // don't know
       res.json({
         status: "Success",

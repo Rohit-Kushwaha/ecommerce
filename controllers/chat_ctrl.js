@@ -36,23 +36,24 @@ const chatCtrl = {
 
   getMessage: async (req, res) => {
     const { sender, receiver } = req.body;
-    console.log(sender,receiver);
     if (!sender || !receiver) {
       return res
         .status(400)
         .json({ msg: "Both sender and receiver are required" });
     }
     try {
-      const messages = await Message.find({
-        $or: [
-          { sender, receiver },
-          { sender: receiver, receiver: sender },
-        ],
-      },
-      {
-        message : 1,
-        _id: 0, // Projection: include 'name', exclude '_id'
-      }).sort({ timestamp: 1 }); // Sort by timestamp to get the correct order
+      const messages = await Message.find(
+        {
+          $or: [
+            { sender, receiver },
+            { sender: receiver, receiver: sender },
+          ],
+        },
+        {
+          message: 1,
+          _id: 0, // Projection: include 'name', exclude '_id'
+        }
+      ).sort({ timestamp: 1 }); // Sort by timestamp to get the correct order
 
       res.json({ messages });
     } catch (error) {
@@ -95,7 +96,6 @@ const initSocket = (server) => {
 
     // Handle client disconnect
     socket.on("disconnect", () => {
-      console.log("A user disconnected:", socket.id);
     });
   });
 };
