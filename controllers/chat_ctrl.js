@@ -17,7 +17,7 @@ const chatCtrl = {
         }, // Case-insensitive regex search
         {
           name: 1,
-          _id: 0, // Projection: include 'name', exclude '_id'
+          _id: 1, // Projection: include 'name', exclude '_id'
         }
       );
 
@@ -35,8 +35,8 @@ const chatCtrl = {
   },
 
   getMessage: async (req, res) => {
-    const { sender, receiver } = req.body;
-    if (!sender || !receiver) {
+    const { senderId, receiverId } = req.body;
+    if (!senderId || !receiverId) {
       return res
         .status(400)
         .json({ msg: "Both sender and receiver are required" });
@@ -45,8 +45,8 @@ const chatCtrl = {
       const messages = await Message.find(
         {
           $or: [
-            { sender, receiver },
-            { sender: receiver, receiver: sender },
+            { senderId, receiverId },
+            { senderId: receiverId, receiverId: senderId },
           ],
         },
         {
@@ -60,6 +60,56 @@ const chatCtrl = {
       console.error("Error fetching messages:", error);
       res.status(500).json({ msg: "Failed to retrieve messages" });
     }
+  },
+
+  getChattedUser: async (req, res) => {
+    const { senderId } = req.body;
+
+    if (!senderId) {
+      return res.status(400).json({ msg: "Sender id required" });
+    }
+    // Fetch unique user IDs from messages where the sender or receiver is the logged-in user
+    const messageColl = await Message.aggregate([
+      // Aggregation Pipeline:
+      // $match: Filters messages involving the logged-in user as a sender or receiver.
+      // $project: Dynamically determines the user ID of the other participant in the chat.
+      // $group: Groups by the determined user ID to ensure uniqueness.
+      {
+        $match: {
+          $or: [{ senderId }, { receiverId: senderId }],
+        },
+      },
+      // Certainly! The $project stage in the aggregation pipeline is used to shape
+      //  the structure of the documents that are passed to the next stage. In this case,
+      //  the $cond operator is used to dynamically decide which field
+      // (senderId or receiverId) should be included as userId. Let me break it down:
+      {
+        $project: {
+          userId: {
+            // { $cond: [ <condition>, <true-case>, <false-case> ] }
+            $cond: [
+              { $eq: ["$senderId", senderId] },
+              "$receiverId",
+              "$senderId",
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: "$userId",
+        },
+      },
+    ]);
+    // console.log(messageColl);
+
+    // Extract user IDs
+    const userIds = messageColl.map((doc) => doc._id);
+
+    // Fetch user details for the unique user IDs
+    const users = await Users.find({ _id: { $in: userIds } }, { name: 1 });
+
+    res.json({ username: users });
   },
 };
 // WebSocket connection handling
@@ -95,8 +145,7 @@ const initSocket = (server) => {
     });
 
     // Handle client disconnect
-    socket.on("disconnect", () => {
-    });
+    socket.on("disconnect", () => {});
   });
 };
 

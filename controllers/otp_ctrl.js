@@ -93,7 +93,7 @@ const otpCtrl = {
 
         await userVerified.save();
 
-        return res.json({ accessToken });
+        return res.json({ accessToken, id: registerUser._id });
       }
 
       res.status(400).json({ msg: "Otp not correct" });
