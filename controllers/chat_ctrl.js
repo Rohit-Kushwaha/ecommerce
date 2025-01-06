@@ -111,7 +111,31 @@ const chatCtrl = {
 
     res.json({ username: users });
   },
+
+  saveChattedUser: async (req, res) => {
+    try {
+      const { senderId, receiverId } = req.body;
+
+      if (!receiverId) {
+        return res.json({ msg: "Receiver Id can not be null" });
+      }
+
+      const messagee = "";
+
+      const newChattedUser = new Message({
+        senderId: senderId,
+        receiverId: receiverId,
+        message: messagee,
+      });
+      await newChattedUser.save();
+      res.json({msg: "User added"});
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: error.message });
+    }
+  },
 };
+
 // WebSocket connection handling
 const initSocket = (server) => {
   const io = socketIo(server, {
