@@ -51,6 +51,8 @@ const chatCtrl = {
         },
         {
           message: 1,
+          senderId: senderId,
+          receiverId: receiverId,
           _id: 0, // Projection: include 'name', exclude '_id'
         }
       ).sort({ timestamp: 1 }); // Sort by timestamp to get the correct order
@@ -128,7 +130,7 @@ const chatCtrl = {
         message: messagee,
       });
       await newChattedUser.save();
-      res.json({msg: "User added"});
+      res.json({ msg: "User added" });
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: error.message });
@@ -136,41 +138,5 @@ const chatCtrl = {
   },
 };
 
-// WebSocket connection handling
-const initSocket = (server) => {
-  const io = socketIo(server, {
-    cors: {
-      origin: "*", // Allow requests from all origins (configure this for security in production)
-      methods: ["GET", "POST"],
-    },
-  });
-
-  io.on("connection", (socket) => {
-    // Listen for a "send_message" event
-    socket.on("send_message", async (data) => {
-      const { receiver, sender, message } = data;
-
-      // Save the message to the database
-      try {
-        const newMessage = new Message({
-          sender: sender,
-          receiver: receiver,
-          message: message,
-        });
-
-        await newMessage.save(); // Save the message to MongoDB
-
-        // Broadcast the message to the receiver's socket (private message)
-        io.to(receiver).emit("receive_message", { sender, receiver, message });
-      } catch (error) {
-        console.error("Error saving message:", error);
-        socket.emit("error", { msg: "Failed to save message" });
-      }
-    });
-
-    // Handle client disconnect
-    socket.on("disconnect", () => {});
-  });
-};
-
-module.exports = { chatCtrl, initSocket };
+// module.exports = { chatCtrl, initSocket };
+module.exports = { chatCtrl };

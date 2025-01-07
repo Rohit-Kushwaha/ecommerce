@@ -69,7 +69,7 @@ const userCtrl = {
         httpOnly: true,
         path: "/user/refresh_token",
       });
-      res.json({ accessToken });
+      res.json({ accessToken, id: user._id });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ msg: error.msg });
