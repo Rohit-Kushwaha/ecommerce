@@ -76,14 +76,14 @@ io.on("connection", (socket) => {
         receiverId: receiverId,
         message: message,
       });
-      console.log(newMessage);
+      // console.log(newMessage);
 
       if (receiverId) {
-        io.except(senderId).emit("receive_message", { message });
+        io.except(senderId).emit("receive_message", {senderId,receiverId, message });
     
-        console.log(`Message sent to receiver ${receiverId}`);
+        // console.log(`Message sent to receiver ${receiverId}`);
       } else {
-        console.log(`Receiver ${receiverId} is not connected.`);
+        // console.log(`Receiver ${receiverId} is not connected.`);
       }
 
         // socket.emit("receive_message", { message });
