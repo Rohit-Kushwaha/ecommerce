@@ -43,7 +43,8 @@ const chatCtrl = {
     }
     try {
       const messages = await Message
-        .find
+        .find()
+        // .sort({ timestamp: -1 })
         // {
         //   $or: [
         //     { senderId, receiverId },
@@ -56,8 +57,8 @@ const chatCtrl = {
         //   receiverId: receiverId,
         //   _id: 0, // Projection: include 'name', exclude '_id'
         // }
-        ()
-        .sort({ timestamp: 1 }); // Sort by timestamp to get the correct order
+        
+        ; // Sort by timestamp to get the correct order
 
       // Transform messages to correctly reflect sender/receiver roles
       // Determine direction of each message
