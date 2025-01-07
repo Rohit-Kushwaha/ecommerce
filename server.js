@@ -88,7 +88,7 @@ io.on("connection", (socket) => {
 
         // socket.emit("receive_message", { message });
 
-      // await newMessage.save(); // Save the message to MongoDB
+      await newMessage.save(); // Save the message to MongoDB
 
       // Broadcast the message to the receiver's socket (private message)
       // io.to(receiverId).emit("receive_message", { senderId, receiverId, message });

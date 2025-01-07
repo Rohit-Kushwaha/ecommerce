@@ -46,7 +46,7 @@ const chatCtrl = {
         {
           $or: [
             { senderId, receiverId },
-            { senderId: receiverId, receiverId: senderId },
+            // { senderId: receiverId },
           ],
         },
         {
