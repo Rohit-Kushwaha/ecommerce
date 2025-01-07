@@ -5,7 +5,7 @@ const cors = require("cors");
 const http = require("http");
 const fileUpload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
-const Message = require("../Ecommerce/model/chat_model.js");
+const Message = require("./model/chat_model.js");
 // const { initSocket } = require("./controllers/chat_ctrl.js");
 const { Server } = require("socket.io");
 
