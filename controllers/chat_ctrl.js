@@ -42,22 +42,48 @@ const chatCtrl = {
         .json({ msg: "Both sender and receiver are required" });
     }
     try {
-      const messages = await Message.find(
-        {
-          $or: [
-            { senderId, receiverId },
-            // { senderId: receiverId },
-          ],
-        },
-        {
-          message: 1,
-          senderId: senderId,
-          receiverId: receiverId,
-          _id: 0, // Projection: include 'name', exclude '_id'
-        }
-      ).sort({ timestamp: 1 }); // Sort by timestamp to get the correct order
+      const messages = await Message
+        .find
+        // {
+        //   $or: [
+        //     { senderId, receiverId },
+        //     { senderId: receiverId, receiverId: senderId },
+        //   ],
+        // },
+        // {
+        //   message: 1,
+        //   senderId: senderId,
+        //   receiverId: receiverId,
+        //   _id: 0, // Projection: include 'name', exclude '_id'
+        // }
+        ()
+        .sort({ timestamp: 1 }); // Sort by timestamp to get the correct order
 
-      res.json({ messages });
+      // Transform messages to correctly reflect sender/receiver roles
+      // Determine direction of each message
+      const formattedMessages = messages.map((msg) => {
+        if (msg.senderId === senderId && msg.receiverId === receiverId) {
+          return {
+            message: msg.message,
+            senderId: senderId,
+            receiverId: receiverId,
+          };
+        } else if (msg.senderId === receiverId && msg.receiverId === senderId) {
+          return {
+            message: msg.message,
+            senderId: receiverId,
+            receiverId: senderId,
+          };
+        } else {
+          // This should not happen, but handle it just in case
+          // return {
+          //   message: msg.message,
+          //   direction: "unknown",
+          // };
+        }
+      });
+      res.json({ messages: formattedMessages });
+      // res.json({ messages });
     } catch (error) {
       console.error("Error fetching messages:", error);
       res.status(500).json({ msg: "Failed to retrieve messages" });
