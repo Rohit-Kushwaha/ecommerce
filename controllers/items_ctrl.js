@@ -59,6 +59,22 @@ const itemCtrl = {
         status: "Success",
         result: items.length,
         items: items,
+        // page:
+      });
+    } catch (error) {
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+
+  getTestItems: async (req, res) => {
+    // console.log(req.query);
+    try {
+      const items = await Items.find();
+      res.json({
+        status: "Success",
+        result: items.length,
+        items: items,
+        // page:
       });
     } catch (error) {
       return res.status(500).json({ msg: error.message });
