@@ -28,6 +28,7 @@ app.use("/api", require("./routes/places_route.js"));
 app.use("/api", require("./routes/items_router.js"));
 app.use("/api", require("./routes/otp_route.js"));
 app.use("/api", require("./routes/chat_router.js"));
+app.use("/api", require("./routes/notification_router.js"));
 
 /// Connect to mongodb
 const URI = process.env.MONGO_DB_URL;
